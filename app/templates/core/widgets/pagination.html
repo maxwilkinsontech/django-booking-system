@@ -1,0 +1,34 @@
+{% load pagination %}
+
+{% if page_obj.has_previous or page_obj.has_next %}
+    <nav class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6" aria-label="Pagination">
+        <div class="hidden sm:block">
+            <p class="text-sm text-gray-700">
+                Page
+                <span class="font-medium">{{ page_obj.number }}</span>
+                of
+                <span class="font-medium">{{ page_obj.paginator.num_pages }}</span>
+            </p>
+        </div>
+        <div class="flex-1 flex justify-between sm:justify-end">
+            {% if page_obj.has_previous %}
+                <a href="?{% url_replace request 'page' page_obj.previous_page_number %}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    Previous
+                </a>
+            {% else %}
+                <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 opacity-50">
+                    Previous
+                </a>
+            {% endif %}
+            {% if page_obj.has_next %}
+                <a href="?{% url_replace request 'page' page_obj.next_page_number %}" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    Next
+                </a>
+            {% else %}
+                <a href="#" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 opacity-50">
+                    Next
+                </a>
+            {% endif %}
+        </div>
+    </nav>
+{% endif %}

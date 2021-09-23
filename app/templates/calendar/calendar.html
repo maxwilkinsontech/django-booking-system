@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block nav_calendar_text %}bg-indigo-800 text-white{% endblock nav_calendar_text %}
+{% block nav_calendar_icon %}text-white{% endblock nav_calendar_icon %}
+{% block nav_mobile_calendar_text %}bg-indigo-800 text-white{% endblock nav_mobile_calendar_text %}
+{% block nav_mobile_calendar_icon %}text-white{% endblock nav_mobile_calendar_icon %}
+
+{% block title %}Calendar{% endblock title %}
+
+{% block extra_head %}
+<link href="{% static 'css/fullcalendar.min.css' %}" rel="stylesheet" />
+<script src="{% static 'js/fullcalendar.min.js' %}"></script>
+<script>
+    var resources = JSON.parse(`{{ resources|safe }}`);
+    var calendar;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        calendar = new FullCalendar.Calendar(calendarEl, {
+            editable: false,
+            initialView: 'dayGridMonth',
+            nowIndicator: true,
+            showNonCurrentDates: false,
+            fixedWeekCount: false,
+            navLinks: true,
+            dayMaxEvents: true,
+            moreLinkClick: 'resourceTimeline',
+            resourceGroupField: 'siteId',
+            stickyHeaderDates: true,
+            scrollTime: '12:00:00',
+            headerToolbar: {
+                left: 'title',
+                right: 'today prev,next resourceTimelineDay,dayGridMonth'
+            },
+            eventSources: [
+            {
+                url: "{% url 'api-calendar-bookings' %}",
+                extraParams: function() {
+                    return {
+                        'booking_site': document.getElementById('booking_site').value,
+                        'booking_status': document.getElementById('booking_status').value,
+                    };
+                },
+                failure: function() {
+                    alert('There was an error while fetching bookings. Please refresh the page to try again.');
+                },
+            }
+            ],
+            eventTimeFormat: { // like '14:30:00'
+                hour: 'numeric',
+                minute: '2-digit',
+                meridiem: 'short'
+            },
+            resources: resources,
+            resourceAreaColumns: [
+                {
+                    field: 'title',
+                    headerContent: 'Sites'
+                },
+            ],
+            resourceOrder: 'title',
+            eventClick: function(info) {
+                var url = `/bookings/${info.event.id}`
+                window.location.href = url;
+            },
+        });
+        calendar.render();
+    });
+</script>
+{% endblock extra_head %}
+
+{% block content %}
+<div class="md:flex md:items-center md:justify-between mt-4 mb-2 hidden-print">
+    <div class="flex-1 min-w-0">
+        <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:leading-9 sm:truncate">
+            Calendar
+        </h2>
+    </div>
+</div>
+<div class="grid grid-cols-1 gap-y-4 gap-x-4 sm:grid-cols-6 my-4 hidden-print">
+    <div class="sm:col-span-2">
+        <label for="booking_site" class="block text-sm font-medium text-gray-700">Site</label>
+        <select id="booking_site" name="booking_site" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+            {% if user.is_manager %}
+                <option value="" selected>All</option>
+                {% for site in sites %}
+                    <option value="{{ site.id }}">{{ site.site_name }}</option>
+                {% endfor %}
+            {% else %}
+                <option value="{{ user.site.id }}" selected>{{ user.site.site_name }}</option>
+            {% endif %}
+        </select>
+    </div>
+    <div class="sm:col-span-2">
+        <label for="booking_status" class="block text-sm font-medium text-gray-700">Booking Status</label>
+        <select id="booking_status" name="booking_status" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+            <option value="" selected>Confirmed</option>
+            <option value="cancelled">Cancelled</option>
+            <option value="all">All</option>
+        </select>
+    </div>
+</div>
+<div class="my-4 visible-print">
+    <div id="printInfo" class="visible-print" style="display: none;">
+        {{ request.user.username }}
+    </div>
+    <div id='calendar'></div>
+</div>
+<div class="my-4 text-right hidden-print">
+    <button type="button" id="printCalendar" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+        <!-- Heroicon name: solid/printer -->
+        <svg class="-ml-1 mr-2 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+        </svg>
+        Print
+    </button>
+</div>
+
+{% endblock content %}
+
+{% block scripts %}
+<script>
+    var siteSelect = document.getElementById('booking_site');
+    var statusSelect = document.getElementById('booking_status');
+
+    function updateCalendar() {
+        calendar.refetchEvents()
+    }
+
+    siteSelect.onchange = function () { updateCalendar(); }
+    statusSelect.onchange = function () { updateCalendar(); }
+
+    // Print calendar.
+    var printButton = document.getElementById('printCalendar');
+    var printInfo = document.getElementById('printInfo');
+    printButton.onclick = function () {
+        printInfo.innerHTML += ` [${new Date()}]`;
+        window.print();
+    }
+</script>
+{% endblock scripts %}

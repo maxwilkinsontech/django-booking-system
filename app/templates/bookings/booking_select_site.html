@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block nav_booking_create_text %}bg-indigo-800 text-white{% endblock nav_booking_create_text %}
+{% block nav_booking_create_icon %}text-white{% endblock nav_booking_create_icon %}
+{% block nav_mobile_booking_create_text %}bg-indigo-800 text-white{% endblock nav_mobile_booking_create_text %}
+{% block nav_mobile_booking_create_icon %}text-white{% endblock nav_mobile_booking_create_icon %}
+
+{% block title %}Create Booking{% endblock title %}
+
+{% block content %}
+<div class="md:flex md:items-center md:justify-between mt-4">
+    <div class="flex-1 min-w-0">
+        <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:leading-9 sm:truncate">
+            Create Booking
+        </h2>
+    </div>
+</div>
+
+<div class="bg-white overflow-hidden shadow rounded-lg divide-y divide-gray-200 mt-4">
+  <div class="px-4 py-5 sm:px-6">
+    <h3 class="text-lg leading-6 font-medium text-gray-900">
+          Please select the site you would like to create a booking for:
+        </h3>
+  </div>
+  <div>
+    <ul class="divide-y divide-gray-200">
+        {% for site in object_list %}
+            <li>
+                <a href="{% url 'booking-create' site.id %}" class="block hover:bg-gray-50">
+                    <div class="flex items-center px-4 py-4 sm:px-6">
+                        <div class="min-w-0 flex-1 flex items-center">
+                            <div class="min-w-0 flex-1 md:grid md:grid-cols-2 md:gap-4">
+                                <div>
+                                    <p class="text-sm font-medium text-indigo-600 truncate">{{ site.site_name }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <!-- Heroicon name: solid/chevron-right -->
+                            <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </div>
+                </a>
+            </li>
+        {% endfor %}
+      </ul>
+  </div>
+</div>
+{% endblock content %}

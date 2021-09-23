@@ -1,0 +1,30 @@
+{% load widget_tweaks %}
+
+<ul id="id_{{ field.name }}" class="space-y-2">
+    <div class="flex justify-between">
+        <label for="" class="block text-sm font-medium text-gray-700">
+            {% if label %}
+                {% if label != '*' %}
+                    {{ label|title  }}
+                {% endif %}
+            {% else %}
+                {{ field.label|title  }}
+            {% endif %}
+        </label>
+    </div>
+    <li>
+        <label for="id_{{ field.name }}_1" class="block text-sm leading-5 font-medium text-gray-700">
+            <input type="radio" name="{{ field.name }}" value="True" class="form-radio h-4 w-4 mr-1 text-indigo-600 transition duration-150 ease-in-out" rows="" required="" id="id_{{ field.name }}_1" {% if field.value == 'True' %}checked="checked"{% endif %}>
+            {{ label_true }}
+        </label>
+    </li>
+    <li>
+        <label for="id_{{ field.name }}_0" class="block text-sm leading-5 font-medium text-gray-700">
+            <input type="radio" name="{{ field.name }}" value="False" class="form-radio h-4 w-4 mr-1 text-indigo-600 transition duration-150 ease-in-out" rows="" required="" id="id_{{ field.name }}_0" {% if field.value == 'False' %}checked="checked"{% endif %}>
+            {{ label_false }}
+        </label>
+    </li>
+</ul>
+{% for error in field.errors %}
+    <p class="mt-2 text-sm text-red-600">{{ error }}</p>
+{% endfor %}

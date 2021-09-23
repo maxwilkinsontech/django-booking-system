@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+
+{% block nav_client_text %}bg-indigo-800 text-white{% endblock nav_client_text %}
+{% block nav_client_icon %}text-white{% endblock nav_client_icon %}
+{% block nav_mobile_client_text %}bg-indigo-800 text-white{% endblock nav_mobile_client_text %}
+{% block nav_mobile_client_icon %}text-white{% endblock nav_mobile_client_icon %}
+
+{% block title %}{{ object.client_name }}{% endblock title %}
+
+{% block content %}
+<div class="mt-4">
+    <nav class="sm:hidden" aria-label="Back">
+        <a href="{% url 'client-list' %}" class="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700">
+            <!-- Heroicon name: chevron-left -->
+            <svg class="flex-shrink-0 -ml-1 mr-1 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+            </svg>
+            Back
+        </a>
+    </nav>
+    <nav class="hidden sm:flex" aria-label="Breadcrumb">
+        <ol class="flex items-center space-x-4">
+            <li>
+                <div>
+                    <a href="{% url 'client-list' %}" class="text-sm font-medium text-gray-500 hover:text-gray-700">Clients</a>
+                </div>
+            </li>
+            <li>
+                <div class="flex items-center">
+                    <!-- Heroicon name: chevron-right -->
+                    <svg class="flex-shrink-0 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    <a href="#" class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700">{{ object.client_name }}</a>
+                </div>
+            </li>
+        </ol>
+    </nav>
+</div>
+
+<div class="mt-2 md:flex md:items-center md:justify-between">
+    <div class="flex-1 min-w-0">
+        <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:leading-9 sm:truncate">
+            {{ object.client_name }}
+        </h2>
+    </div>
+</div>
+
+<div class="bg-white overflow-hidden shadow rounded-lg divide-y divide-gray-200 my-4">
+    <div class="px-4 py-5 sm:px-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900">
+            Client Information
+        </h3>
+    </div>
+    <div class="px-4 py-5 sm:p-6">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                <div class="sm:col-span-6">
+                    <div class="sm:w-1/2">
+                        {% include 'core/forms/input_field.html' with form=form field=form.client_name label="Name" %}
+                    </div>
+                </div>
+                <div class="sm:col-span-3">
+                    {% include 'core/forms/input_field.html' with form=form field=form.client_email label="Email" %}
+                </div>
+                <div class="sm:col-span-3">
+                    {% include 'core/forms/input_field.html' with form=form field=form.client_phone label="Phone Number" %}
+                </div>
+            </div>
+            <div class="mt-4 text-right">
+                <button type="submit" class="bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Save
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="bg-white overflow-hidden shadow rounded-lg divide-y divide-gray-200 my-4">
+    <div class="px-4 py-5 sm:px-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900">
+            Bookings
+        </h3>
+    </div>
+    <div>
+        <ul class="divide-y divide-gray-200">
+            {% for booking in bookings %}
+                <li>
+                    <a href="{% url 'booking-detail' booking.id %}" class="block hover:bg-gray-50">
+                        <div class="flex items-center px-2 py-4">
+                            <div class="min-w-0 flex-1 flex items-center">
+                                <div class="min-w-0 flex-1 px-4 md:grid md:grid-cols-2 md:gap-4">
+                                    <div>
+                                        <p class="text-sm font-medium text-indigo-600 truncate">{{ booking }}</p>
+                                        <p class="mt-2 flex items-center text-sm text-gray-500">
+                                            <!-- Heroicon name: outline/office-building -->
+                                            <svg class="flex-shrink-0 mr-1.5 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                            </svg>
+                                            <span class="truncate">{{ booking.site.site_name }}</span>
+                                        </p>
+                                    </div>
+                                    <div class="hidden md:block">
+                                        <div>
+                                        <p class="text-sm text-gray-900">
+                                            Booking on {{ booking.booking_date }} [{{ booking.get_duration_display }}]
+                                        </p>
+                                        <p class="mt-2 flex items-center text-sm text-gray-500">
+                                            {% if booking.status == booking.StatusChoices.CONFIRMED %}
+                                                <!-- Heroicon name: solid/check-circle -->
+                                                <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                                </svg>
+                                                Confirmed
+                                            {% elif booking.status == booking.StatusChoices.CANCELLED %}
+                                                <!-- Heroicon name: solid/check-circle -->
+                                                <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>    
+                                                </svg>
+                                                Cancelled
+                                            {% endif %}
+                                        </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <!-- Heroicon name: solid/chevron-right -->
+                                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+            {% empty %}
+                <div class="px-6 py-4">
+                    <p>Client has not made any bookings yet</p>
+                </div>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock content %}

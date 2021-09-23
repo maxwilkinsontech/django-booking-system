@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+
+{% block nav_booking_list_text %}bg-indigo-800 text-white{% endblock nav_booking_list_text %}
+{% block nav_booking_list_icon %}text-white{% endblock nav_booking_list_icon %}
+{% block nav_mobile_booking_list_text %}bg-indigo-800 text-white{% endblock nav_mobile_booking_list_text %}
+{% block nav_mobile_booking_list_icon %}text-white{% endblock nav_mobile_booking_list_icon %}
+
+{% block title %}Bookings{% endblock title %}
+
+{% block content %}
+<div class="md:flex md:items-center md:justify-between mt-4">
+    <div class="flex-1 min-w-0">
+        <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:leading-9 sm:truncate">
+            Bookings
+        </h2>
+    </div>
+</div>
+
+<form method="GET" id="filterForm" novalidate>
+    <div class="min-w-0 flex-1">
+        <div class="flex items-center pt-4">
+            <div class="w-full">
+                <label for="search" class="sr-only">Search</label>
+                <div class="relative">
+                    <div class="pointer-events-none absolute inset-y-0 left-0 pl-3 flex items-center">
+                    <!-- Heroicon name: solid/search -->
+                    <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <input type="text" name="q" id="search" class="focus:ring-indigo-500 focus:border-indigo-500 block w-full rounded-none rounded-l-md pl-10 text-sm border-gray-300" placeholder="Search bookings" value="{{ request.GET.q }}">
+            </div>
+        </div>
+        <button type="submit" class="-ml-px relative inline-flex items-center space-x-2 px-4 py-2 border border-gray-300 text-sm font-medium rounded-r-md text-gray-700 bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
+            <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+            <span>Search</span>
+        </button>
+    </div>
+    <div class="grid grid-cols-1 gap-y-4 gap-x-4 sm:grid-cols-6 mt-2">
+        <div class="sm:col-span-2">
+            <label for="booking_date_filter" class="block text-sm font-medium text-gray-700">Filter Bookings</label>
+            <select id="booking_date_filter" name="booking_date_filter" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                <option value="" {% if not request.GET.booking_date_filter %}selected{% endif %}>Today and future bookings</option>
+                <option value="today" {% if request.GET.booking_date_filter == 'today' %}selected{% endif %}>Today's bookings</option>
+                <option value="future" {% if request.GET.booking_date_filter == 'future' %}selected{% endif %}>Future bookings</option>
+                <option value="all" {% if request.GET.booking_date_filter == 'all' %}selected{% endif %}>All</option>
+            </select>
+        </div>
+        <div class="sm:col-span-2">
+            <label for="booking_site" class="block text-sm font-medium text-gray-700">Site</label>
+            <select id="booking_site" name="booking_site" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                {% if user.is_manager %}
+                    <option value="" {% if not request.GET.booking_site %}selected{% endif %}>All</option>
+                    {% for site in sites %}
+                        <option value="{{ site.id }}"  {% if request.GET.booking_site == site.id|stringformat:"s" %}selected{% endif %}>{{ site.site_name }}</option>
+                    {% endfor %}
+                {% else %}
+                    <option value="{{ user.site.id }}" selected>{{ user.site.site_name }}</option>
+                {% endif %}
+            </select>
+        </div>
+        <div class="sm:col-span-2">
+            <label for="booking_date" class="block text-sm font-medium text-gray-700">Booking Date</label>
+            <div class="mt-1 relative rounded-md shadow-sm">
+                <input type="text" name="booking_date" id="booking_date" value="{{ request.GET.booking_date }}" class="flatpickrDateField shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<div class="bg-white overflow-hidden shadow rounded-lg my-6">
+    <div class="flex flex-col">
+        <div class="-my-2 overflow-x-auto">
+            <div class="py-2 align-middle inline-block min-w-full">
+                <div class="shadow overflow-hidden border-b border-gray-200 rounded-lg">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead>
+                            <tr>
+                                <th class="px-3 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                    Ref
+                                </th>
+                                <th class="px-2 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                    Site
+                                </th>
+                                <th class="px-2 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                    Status
+                                </th>
+                                <th class="px-2 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                    Date
+                                </th>
+                                <th class="px-2 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                    Party
+                                </th>
+                                <th class="px-2 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                    Name
+                                </th>
+                                <th class="px-2 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                    Email
+                                </th>
+                                <th class="px-2 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                    Phone
+                                </th>
+                                <th class="px-3 py-3 bg-gray-50"></th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            {% for booking in object_list %}
+                                <tr>
+                                    <td class="px-3 py-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
+                                        #{{ booking.reference }}
+                                    </td>
+                                    <td class="px-2 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
+                                        {{ booking.site.site_name }}
+                                    </td>
+                                    <td class="px-2 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
+                                        {% if booking.status == booking.StatusChoices.CONFIRMED %}
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                Scheduled
+                                            </span>
+                                        {% elif booking.status == booking.StatusChoices.CANCELLED %}
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                                Cancelled
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="px-2 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
+                                        {{ booking.booking_date }}
+                                    </td>
+                                    <td class="px-2 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500 text-center">
+                                        {{ booking.party }}
+                                    </td>
+                                    <td class="px-2 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
+                                        {{ booking.client.client_name }}
+                                    </td>
+                                    <td class="px-2 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
+                                        {{ booking.client.client_email }}
+                                    </td>
+                                    <td class="px-2 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
+                                        {{ booking.client.client_phone }}
+                                    </td>
+                                    <td class="px-3 py-3 whitespace-no-wrap text-right text-sm leading-5 font-medium">
+                                        <a href="{% url 'booking-detail' booking.id %}" class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                            View
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="9"><div class="my-2 ml-3 text-sm leading-5 text-gray-900">No bookings to show</div></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% include 'core/widgets/pagination.html' with page_object=page_object %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+<script>
+    initFlatpickr();
+    
+    // Filter submits form upon change.
+    const form = document.getElementById('filterForm');
+    const filterBookings = document.getElementById('booking_date_filter');
+    const bookingSite = document.getElementById('booking_site');
+    const bookingDate = document.getElementById('booking_date');
+
+    function postForm() {
+        form.submit();
+    }
+
+    filterBookings.onchange = function (e) { postForm() };
+    bookingSite.onchange = function (e) { postForm() };
+    bookingDate.onchange = function (e) { postForm() };
+</script>
+{% endblock scripts %}

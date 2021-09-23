@@ -1,0 +1,296 @@
+{% extends 'base.html' %}
+
+{% block nav_booking_list_text %}bg-indigo-800 text-white{% endblock nav_booking_list_text %}
+{% block nav_booking_list_icon %}text-white{% endblock nav_booking_list_icon %}
+{% block nav_mobile_booking_list_text %}bg-indigo-800 text-white{% endblock nav_mobile_booking_list_text %}
+{% block nav_mobile_booking_list_icon %}text-white{% endblock nav_mobile_booking_list_icon %}
+
+{% block title %}{{ object }}{% endblock title %}
+
+{% block apline_data %}'showCancelModal': false }" @keydown.escape="showCancelModal = false;"{% endblock apline_data %} 
+
+{% block content %}
+<div class="mt-4">
+    <nav class="sm:hidden" aria-label="Back">
+        <a href="{% url 'booking-list' %}" class="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700">
+            <!-- Heroicon name: chevron-left -->
+            <svg class="flex-shrink-0 -ml-1 mr-1 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+            </svg>
+            Back
+        </a>
+    </nav>
+    <nav class="hidden sm:flex" aria-label="Breadcrumb">
+        <ol class="flex items-center space-x-4">
+            <li>
+                <div>
+                    <a href="{% url 'booking-list' %}" class="text-sm font-medium text-gray-500 hover:text-gray-700">Bookings</a>
+                </div>
+            </li>
+            <li>
+                <div class="flex items-center">
+                    <!-- Heroicon name: chevron-right -->
+                    <svg class="flex-shrink-0 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    <a href="#" class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700">{{ object }}</a>
+                </div>
+            </li>
+        </ol>
+    </nav>
+</div>
+
+<div class="mt-2 md:flex md:items-center md:justify-between">
+    <div class="flex-1 min-w-0">
+        <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:leading-9 sm:truncate">
+            {{ object }}
+        </h2>
+    </div>
+    <div class="mt-4 flex md:mt-0 md:ml-4">
+        <span class="shadow-sm rounded-md">
+            <a href="{% url 'booking-email-client' object.id %}" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <!-- Heroicon name: solid/email -->
+                <svg class="-ml-1 mr-2 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+                Send Email
+            </a>
+        </span>
+    </div>
+    {% if booking.can_cancel %}
+        <div class="mt-4 flex md:mt-0 md:ml-4">
+            <form method="POST" action="{% url 'booking-cancel' object.id %}" id="cancel_form">{% csrf_token %}</form>
+            <span class="shadow-sm rounded-md">
+                <button @click="showCancelModal = true" type="button" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                    <!-- Heroicon name: solid/x -->
+                    <svg class="-ml-1 mr-2 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                    Cancel Booking
+                </button>
+            </span>
+        </div>
+    {% endif %}
+</div>
+
+<div class="bg-white overflow-hidden shadow rounded-lg divide-y divide-gray-200 my-4">
+    <div class="px-4 py-5 sm:px-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900">
+            Booking Information
+        </h3>
+    </div>
+    <div class="px-2">
+        {% if booking.status == booking.StatusChoices.CONFIRMED %}
+            <form method="POST">
+                {% csrf_token %}
+                <dl class="sm:divide-y sm:divide-gray-200">
+                    <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium text-gray-500">
+                            Site
+                        </dt>
+                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-1">
+                            {{ object.site.site_name }}
+                        </dd>
+                    </div>
+                    <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium text-gray-500">
+                            Booking Status
+                        </dt>
+                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-1">
+                            {% if booking.status == booking.StatusChoices.CONFIRMED %}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    Scheduled
+                                </span>
+                            {% elif booking.status == booking.StatusChoices.CANCELLED %}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                    Cancelled
+                                </span>
+                            {% endif %}
+                        </dd>
+                    </div>
+                    <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium text-gray-500">
+                            Date
+                        </dt>
+                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-1">
+                            {% include 'core/forms/date_field.html' with form=form field=form.date label="*" %}
+                        </dd>
+                    </div>
+                    <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium text-gray-500">
+                            Time
+                        </dt>
+                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-1">
+                            {% include 'core/forms/time_field.html' with form=form field=form.time label="*" %}
+                        </dd>
+                    </div>
+                    <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium text-gray-500">
+                            Party Size
+                        </dt>
+                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-1">
+                            {% include 'core/forms/select_field.html' with form=form field=form.party label="*" %}
+                        </dd>
+                    </div>
+                    <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium text-gray-500">
+                            Duration
+                        </dt>
+                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-1">
+                            {% include 'core/forms/select_field.html' with form=form field=form.duration label="*" %}
+                        </dd>
+                    </div>
+                    <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium text-gray-500">
+                            Notes
+                        </dt>
+                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-1">
+                            {% include 'core/forms/input_field.html' with form=form field=form.notes rows=3 label="*" %}
+                        </dd>
+                    </div>
+                    <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium text-gray-500">
+                            Table Allocations
+                        </dt>
+                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-1">
+                            {% for table in object.tables.all %}
+                                {{ table }}<br>
+                            {% endfor %}
+                        </dd>
+                    </div>
+                    <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6"></div>
+                </dl>
+                <div class="mt-4 mx-4 mb-4 text-right">
+                    <button type="submit" class="bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Update Booking
+                    </button>
+                </div>
+            </form>
+        {% else %}
+            <dl class="sm:divide-y sm:divide-gray-200">
+                <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt class="text-sm font-medium text-gray-500">
+                        Site
+                    </dt>
+                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-1">
+                        {{ object.site.site_name }}
+                    </dd>
+                </div>
+                <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt class="text-sm font-medium text-gray-500">
+                        Booking Status
+                    </dt>
+                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-1">
+                        {% if booking.status == booking.StatusChoices.CONFIRMED %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                Scheduled
+                            </span>
+                        {% elif booking.status == booking.StatusChoices.CANCELLED %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                Cancelled
+                            </span>
+                        {% endif %}
+                    </dd>
+                </div>
+                <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt class="text-sm font-medium text-gray-500">
+                        Date
+                    </dt>
+                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-1">
+                        {{ object.booking_date.date }}
+                    </dd>
+                </div>
+                <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt class="text-sm font-medium text-gray-500">
+                        Time
+                    </dt>
+                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-1">
+                        {{ object.booking_date.time }}
+                    </dd>
+                </div>
+                <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt class="text-sm font-medium text-gray-500">
+                        Party Size
+                    </dt>
+                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-1">
+                        {{ object.party }}
+                    </dd>
+                </div>
+                <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt class="text-sm font-medium text-gray-500">
+                        Duration
+                    </dt>
+                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-1">
+                        {{ object.get_duration_display }}
+                    </dd>
+                </div>
+                <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt class="text-sm font-medium text-gray-500">
+                        Notes
+                    </dt>
+                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-1">
+                        {{ object.notes|default:'-' }}
+                    </dd>
+                </div>
+            </dl>
+        {% endif %}
+    </div>
+</div>
+<div class="bg-white overflow-hidden shadow rounded-lg divide-y divide-gray-200 my-4">
+    <div class="px-4 py-5 sm:px-6">
+        <div class="flex">
+            <h3 class="text-lg leading-6 font-medium text-gray-900">
+                Client Information
+            </h3>
+            <a href="{% url 'client-detail' object.client_id %}" class="mt-1 ml-2 text-indigo-600 hover:text-indigo-900">
+                <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                </svg>
+            </a>
+        </div>
+    </div>
+    <div class="px-2">
+        <dl class="sm:divide-y sm:divide-gray-200">
+            <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                <dt class="text-sm font-medium text-gray-500">
+                    Name
+                </dt>
+                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    {{ object.client.client_name }}
+                </dd>
+            </div>
+            <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                <dt class="text-sm font-medium text-gray-500">
+                    Email address
+                </dt>
+                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    {{ object.client.client_email }}
+                </dd>
+            </div>
+            <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                <dt class="text-sm font-medium text-gray-500">
+                    Phone number
+                </dt>
+                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    {{ object.client.client_phone }}
+                </dd>
+            </div>
+        </dl>
+    </div>
+</div>
+
+{% include 'core/modals/confirm_modal.html' with var_name='showCancelModal' modal_title='Cancel Booking' modal_text='Are you sure you want to cancel this booking? An email will be sent to the client to notify them.' %}
+{% endblock content %}
+
+{% block scripts %}
+<script>
+    initFlatpickr(futureOnly = true);
+    initTimepickr(timeStep = 15);
+
+    // Cancel booking form submit for modal.
+    var cancelForm = document.getElementById('cancel_form');
+    function submitForm() {
+        cancelForm.submit();
+    }
+</script>
+{% endblock scripts %}

@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block nav_site_text %}bg-indigo-800 text-white{% endblock nav_site_text %}
+{% block nav_site_icon %}text-white{% endblock nav_site_icon %}
+{% block nav_mobile_site_text %}bg-indigo-800 text-white{% endblock nav_mobile_site_text %}
+{% block nav_mobile_site_icon %}text-white{% endblock nav_mobile_site_icon %}
+
+{% block title %}{{ object.site_name }}{% endblock title %}
+
+{% block content %}
+<div class="mt-4">
+    <nav class="sm:hidden" aria-label="Back">
+        <a href="{% url 'site-list' %}" class="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700">
+            <!-- Heroicon name: chevron-left -->
+            <svg class="flex-shrink-0 -ml-1 mr-1 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+            </svg>
+            Back
+        </a>
+    </nav>
+    <nav class="hidden sm:flex" aria-label="Breadcrumb">
+        <ol class="flex items-center space-x-4">
+            <li>
+                <div>
+                    <a href="{% url 'site-list' %}" class="text-sm font-medium text-gray-500 hover:text-gray-700">Sites</a>
+                </div>
+            </li>
+            <li>
+                <div class="flex items-center">
+                    <!-- Heroicon name: chevron-right -->
+                    <svg class="flex-shrink-0 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    <a href="#" class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700">{{ object.site_name }}</a>
+                </div>
+            </li>
+        </ol>
+    </nav>
+</div>
+
+<div class="mt-2 mb-4 md:flex md:items-center md:justify-between">
+    <div class="flex-1 min-w-0">
+        <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:leading-9 sm:truncate">
+            {{ object.site_name }}
+        </h2>
+	</div>
+</div>
+
+<div class="bg-white overflow-hidden shadow rounded-lg divide-y divide-gray-200 my-4">
+    <div class="px-4 py-4">
+        <div>
+            <div class="sm:hidden">
+                <label for="tabs" class="sr-only">Select a tab</label>
+                <select id="tabs" name="tabs" onchange="navigate(this)" class="block w-full focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md">
+                    <option value="{% url 'site-detail-general' object.id %}" {% if tab_name == 'general' %}selected{% endif %}>General</option>
+                    <option value="{% url 'site-detail-schedule' object.id %}" {% if tab_name == 'schedule' %}selected{% endif %}>Schedule</option>
+                    <option value="{% url 'site-detail-capacity' object.id %}" {% if tab_name == 'capacity' %}selected{% endif %}>Capacity</option>
+                    <option value="{% url 'site-detail-email' object.id %}" {% if tab_name == 'email' %}selected{% endif %}>Email</option>
+                </select>
+            </div>
+            <div class="hidden sm:block">
+                <nav class="flex space-x-4" aria-label="Tabs">
+                    <a href="{% url 'site-detail-general' object.id %}" class="{% block sub_nav_general %}text-gray-500 hover:text-gray-700{% endblock sub_nav_general %} px-3 py-2 font-medium text-sm rounded-md">
+                        General
+                    </a>
+                    <a href="{% url 'site-detail-schedule' object.id %}" class="{% block sub_nav_schedule %}text-gray-500 hover:text-gray-700{% endblock sub_nav_schedule %} px-3 py-2 font-medium text-sm rounded-md">
+                        Schedule
+                    </a>
+                    <a href="{% url 'site-detail-capacity' object.id %}" class="{% block sub_nav_capacity %}text-gray-500 hover:text-gray-700{% endblock sub_nav_capacity %} px-3 py-2 font-medium text-sm rounded-md">
+                        Capacity
+                    </a>
+                    <a href="{% url 'site-detail-email' object.id %}" class="{% block sub_nav_email %}text-gray-500 hover:text-gray-700{% endblock sub_nav_email %} px-3 py-2 font-medium text-sm rounded-md">
+                        Email
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <div class="px-4 py-5 sm:p-6">
+        {% block detail_content %}{% endblock detail_content %}
+    </div>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+<script>
+    function navigate() {
+        var tabs = document.getElementById('tabs');
+        window.location.replace(tabs.value);
+    } 
+</script>
+{% endblock scripts %}

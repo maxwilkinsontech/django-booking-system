@@ -1,0 +1,15 @@
+[x-cloak] {
+    display: none !important;
+}
+
+@media print {
+  .visible-print  { display: inherit !important; }
+  .hidden-print   { display: none !important; }
+  .white-bg-print {background-color: white !important;}
+}
+
+@media print {
+  button {
+      display: none !important;
+  }
+}

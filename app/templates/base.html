@@ -1,0 +1,383 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock title %}</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <!-- Tailwind -->
+    {% tailwind_preload_css %}
+    {% tailwind_css %}
+    <!-- alpinejs  -->
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+    <!-- flatpickr -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    {% block extra_head %}{% endblock extra_head %}
+</head>
+
+<body x-data="{ showSideBar: false, {% block apline_data %}}{% endblock apline_data %}">
+    <div class="h-screen bg-gray-50 flex overflow-hidden white-bg-print">
+        <!-- Narrow sidebar -->
+        <div class="hidden w-28 bg-indigo-700 overflow-y-auto md:block hidden-print">
+            <div class="w-full py-2 flex flex-col items-center">
+                <div class="flex-1 mt-2 w-full px-2 space-y-1">
+                    <a href="{% url 'booking-list' %}"
+                        class="{% block nav_booking_list_text %}text-indigo-100 hover:bg-indigo-800 hover:text-white{% endblock nav_booking_list_text %} group w-full p-3 rounded-md flex flex-col items-center text-xs font-medium">
+                        <!-- Heroicon name: outline/home -->
+                        <svg class="{% block nav_booking_list_icon %}text-indigo-300 group-hover:text-white{% endblock nav_booking_list_icon %} h-6 w-6"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                            </path>
+                        </svg>
+                        <span class="mt-2">Bookings</span>
+                    </a>
+
+                    <a href="{% url 'booking-select-site' %}"
+                        class="{% block nav_booking_create_text %}text-indigo-100 hover:bg-indigo-800 hover:text-white{% endblock nav_booking_create_text %} group w-full p-3 rounded-md flex flex-col items-center text-xs font-medium">
+                        <!-- Heroicon name: outline/plus-circle -->
+                        <svg class="{% block nav_booking_create_icon %}text-indigo-300 group-hover:text-white{% endblock nav_booking_create_icon %} h-6 w-6"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span class="mt-2">Create</span>
+                        <span>Booking</span>
+                    </a>
+
+                    <a href="{% url 'site-list' %}"
+                        class="{% block nav_site_text %}text-indigo-100 hover:bg-indigo-800 hover:text-white{% endblock nav_site_text %} group w-full p-3 rounded-md flex flex-col items-center text-xs font-medium"
+                        aria-current="page">
+                        <!-- Heroicon name: outline/office-building -->
+                        <svg class="{% block nav_site_icon %}text-indigo-300 group-hover:text-white{% endblock nav_site_icon %} h-6 w-6"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                            </path>
+                        </svg>
+                        <span class="mt-2">Sites</span>
+                    </a>
+
+                    <a href="{% url 'client-list' %}"
+                        class="{% block nav_client_text %}text-indigo-100 hover:bg-indigo-800 hover:text-white{% endblock nav_client_text %} group w-full p-3 rounded-md flex flex-col items-center text-xs font-medium">
+                        <!-- Heroicon name: outline/user-group -->
+                        <svg class="{% block nav_client_icon %}text-indigo-300 group-hover:text-white{% endblock nav_client_icon %} h-6 w-6"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        <span class="mt-2">Clients</span>
+                    </a>
+
+                    <a href="{% url 'calendar' %}"
+                        class="{% block nav_calendar_text %}text-indigo-100 hover:bg-indigo-800 hover:text-white{% endblock nav_calendar_text %} group w-full p-3 rounded-md flex flex-col items-center text-xs font-medium">
+                        <!-- Heroicon name: outline/calendar -->
+                        <svg class="{% block nav_calendar_icon %}text-indigo-300 group-hover:text-white{% endblock nav_calendar_icon %} h-6 w-6"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                            </path>
+                        </svg>
+                        <span class="mt-2">Calendar</span>
+                    </a>
+
+                    <a href="{% url 'settings' %}"
+                        class="{% block nav_settings_text %}text-indigo-100 hover:bg-indigo-800 hover:text-white{% endblock nav_settings_text %} group w-full p-3 rounded-md flex flex-col items-center text-xs font-medium">
+                        <!-- Heroicon name: outline/calendar -->
+                        <svg class="{% block nav_settings_icon %}text-indigo-300 group-hover:text-white{% endblock nav_settings_icon %} h-6 w-6"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                            </path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                        <span class="mt-2">Settings</span>
+                    </a>
+
+                    <a href="{% url 'logout' %}"
+                        class="{% block nav_help_text %}text-indigo-100 hover:bg-indigo-800 hover:text-white{% endblock nav_help_text %} group w-full p-3 rounded-md flex flex-col items-center text-xs font-medium">
+                        <!-- Heroicon name: outline/logout -->
+                        <svg class="{% block nav_help_icon %}text-indigo-300 group-hover:text-white{% endblock nav_help_icon %} h-6 w-6"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                            </path>
+                        </svg>
+                        <span class="mt-2">Logout</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!--
+            Mobile menu
+
+            Off-canvas menu for mobile, show/hide based on off-canvas menu state.
+        -->
+        <div class="md:hidden hidden-print" role="dialog" aria-modal="true" x-cloak x-show="showSideBar">
+            <div class="fixed inset-0 z-40 flex">
+                <div class="fixed inset-0 bg-gray-600 bg-opacity-75" aria-hidden="true"></div>
+                <div class="relative max-w-xs w-full bg-indigo-700 pt-5 pb-4 flex-1 flex flex-col">
+                    <div class="absolute top-1 right-0 -mr-14 p-1">
+                        <button @click="showSideBar = false" type="button"
+                            class="h-12 w-12 rounded-full flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-white">
+                            <!-- Heroicon name: outline/x -->
+                            <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            <span class="sr-only">Close sidebar</span>
+                        </button>
+                    </div>
+
+                    <div class="mt-5 flex-1 h-0 px-2 overflow-y-auto">
+                        <nav class="h-full flex flex-col">
+
+                            <div class="space-y-1">
+                                <a href="{% url 'booking-list' %}"
+                                    class="{% block nav_mobile_booking_list_text %}text-indigo-100 hover:bg-indigo-800 hover:text-white{% endblock nav_mobile_booking_list_text %} group py-2 px-3 rounded-md flex items-center text-sm font-medium">
+                                    <!-- Heroicon name: outline/home -->
+                                    <svg class="{% block nav_mobile_booking_list_icon %}text-indigo-300 group-hover:text-white{% endblock nav_mobile_booking_list_icon %} mr-3 h-6 w-6"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                                        </path>
+                                    </svg>
+                                    <span>Bookings</span>
+                                </a>
+
+                                <a href="{% url 'booking-select-site' %}"
+                                    class="{% block nav_mobile_booking_create_text %}text-indigo-100 hover:bg-indigo-800 hover:text-white{% endblock nav_mobile_booking_create_text %} group py-2 px-3 rounded-md flex items-center text-sm font-medium">
+                                    <!-- Heroicon name: outline/plus-circle -->
+                                    <svg class="{% block nav_mobile_booking_create_icon %}text-indigo-300 group-hover:text-white{% endblock nav_mobile_booking_create_icon %} mr-3 h-6 w-6"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <span>Create Booking</span>
+                                </a>
+
+                                <a href="{% url 'site-list' %}"
+                                    class="{% block nav_mobile_site_text %}text-indigo-100 hover:bg-indigo-800 hover:text-white{% endblock nav_mobile_site_text %} group py-2 px-3 rounded-md flex items-center text-sm font-medium">
+                                    <!-- Heroicon name: outline/office-building -->
+                                    <svg class="{% block nav_mobile_site_icon %}text-indigo-300 group-hover:text-white{% endblock nav_mobile_site_icon %} mr-3 h-6 w-6"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                                        </path>
+                                    </svg>
+                                    <span>Sites</span>
+                                </a>
+
+                                <a href="{% url 'client-list' %}"
+                                    class="{% block nav_mobile_client_text %}text-indigo-100 hover:bg-indigo-800 hover:text-white{% endblock nav_mobile_client_text %} group py-2 px-3 rounded-md flex items-center text-sm font-medium">
+                                    <!-- Heroicon name: outline/user-group -->
+                                    <svg class="{% block nav_mobile_client_icon %}text-indigo-300 group-hover:text-white{% endblock nav_mobile_client_icon %} mr-3 h-6 w-6"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                    </svg>
+                                    <span>Clients</span>
+                                </a>
+
+                                <a href="{% url 'calendar' %}"
+                                    class="{% block nav_mobile_calendar_text %}text-indigo-100 hover:bg-indigo-800 hover:text-white{% endblock nav_mobile_calendar_text %} group py-2 px-3 rounded-md flex items-center text-sm font-medium">
+                                    <!-- Heroicon name: outline/calendar -->
+                                    <svg class="{% block nav_mobile_calendar_icon %}text-indigo-300 group-hover:text-white{% endblock nav_mobile_calendar_icon %} mr-3 h-6 w-6"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                        </path>
+                                    </svg>
+                                    <span>Calendar</span>
+                                </a>
+
+                                <a href="{% url 'settings' %}"
+                                    class="{% block nav_mobile_settings_text %}text-indigo-100 hover:bg-indigo-800 hover:text-white{% endblock nav_mobile_settings_text %} group py-2 px-3 rounded-md flex items-center text-sm font-medium">
+                                    <!-- Heroicon name: outline/calendar -->
+                                    <svg class="{% block nav_mobile_settings_icon %}text-indigo-300 group-hover:text-white{% endblock nav_mobile_settings_icon %} mr-3 h-6 w-6"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                                        </path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    </svg>
+                                    <span>Settings</span>
+                                </a>
+
+                                <a href="{% url 'logout' %}"
+                                    class="{% block nav_mobile_help_text %}text-indigo-100 hover:bg-indigo-800 hover:text-white{% endblock nav_mobile_help_text %} group py-2 px-3 rounded-md flex items-center text-sm font-medium">
+                                    <!-- Heroicon name: outline/logout -->
+                                    <svg class="{% block nav_mobile_help_icon %}text-indigo-300 group-hover:text-white{% endblock nav_mobile_help_icon %} mr-3 h-6 w-6"
+                                        fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                                        </path>
+                                    </svg>
+                                    <span>Logout</span>
+                                </a>
+
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+
+                <div class="flex-shrink-0 w-14" aria-hidden="true">
+                    <!-- Dummy element to force sidebar to shrink to fit close icon -->
+                </div>
+            </div>
+        </div>
+        <!-- Content area -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <header class="w-full hidden-print">
+                <div class="relative z-10 flex-shrink-0 h-16 bg-white border-b border-gray-200 shadow-sm flex">
+                    <button @click="showSideBar = true" type="button"
+                        class="border-r border-gray-200 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden">
+                        <span class="sr-only">Open sidebar</span>
+                        <!-- Heroicon name: outline/menu-alt-2 -->
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h7" />
+                        </svg>
+                    </button>
+                    <div class="flex-1 flex justify-between px-4 sm:px-6">
+                        <div class="flex-1 flex">
+                            <form class="w-full flex md:ml-0" action="{% url 'booking-list' %}" method="GET">
+                                <label for="search_field" class="sr-only">Search bookings</label>
+                                <div class="relative w-full text-gray-400 focus-within:text-gray-600">
+                                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center">
+                                        <!-- Heroicon name: solid/search -->
+                                        <svg class="flex-shrink-0 h-5 w-5" xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                            <path fill-rule="evenodd"
+                                                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                    <input name="q" id="search_field"
+                                        class="h-full w-full border-transparent py-2 pl-8 pr-3 text-base text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-0 focus:border-transparent focus:placeholder-gray-400"
+                                        placeholder="Search bookings" type="search">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <!-- Main content -->
+            <div class="flex-1 flex items-stretch overflow-hidden">
+                <main class="flex-1 overflow-y-auto">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div class="max-w-5xl mx-auto">
+                            {% block content %}{% endblock content %}
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'js/date_util.js' %}"></script>
+    {% block scripts %}{% endblock scripts %}
+
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+    <div x-data="{ show: true }" x-show.transition="show" x-init="setTimeout(() => show = false, 5000)"
+        class="fixed inset-0 flex items-end justify-center px-4 py-6 pointer-events-none sm:p-6 sm:items-start sm:justify-end"
+        style="z-index: 99999;">
+        <div
+            class="max-w-sm w-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden">
+            <div class="p-4">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0">
+                        <svg class="h-6 w-6 text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div class="ml-3 w-0 flex-1 pt-0.5">
+                        <p class="text-sm font-medium text-gray-900">
+                            {{ message }}
+                        </p>
+                    </div>
+                    <div class="ml-4 flex-shrink-0 flex">
+                        <button @click="show = false"
+                            class="bg-white rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <span class="sr-only">Close</span>
+                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd"
+                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+    <div x-data="{ show: true }" x-show.transition="show" x-init="setTimeout(() => show = false, 5000)"
+        class="fixed inset-0 flex items-end justify-center px-4 py-6 pointer-events-none sm:p-6 sm:items-start sm:justify-end"
+        style="z-index: 99999;">
+        <div
+            class="max-w-sm w-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden">
+            <div class="p-4">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0">
+                        <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                            </path>
+                        </svg>
+                    </div>
+                    <div class="ml-3 w-0 flex-1 pt-0.5">
+                        <p class="text-sm font-medium text-gray-900">
+                            {{ message }}
+                        </p>
+                    </div>
+                    <div class="ml-4 flex-shrink-0 flex">
+                        <button @click="show = false"
+                            class="bg-white rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <span class="sr-only">Close</span>
+                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd"
+                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+</body>
+
+</html>

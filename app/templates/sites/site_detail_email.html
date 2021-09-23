@@ -1,0 +1,254 @@
+{% extends 'sites/site_detail_base.html' %}
+
+{% block sub_nav_email %}bg-indigo-100 text-indigo-700{% endblock sub_nav_email %}
+
+{% block detail_content %}
+<div>
+    <div class="border-b mb-2">
+        <h3 class="text-lg leading-6 font-medium text-gray-900">
+            Email
+        </h3>
+        <p class="mt-1 max-w-2xl text-sm text-gray-500">
+        </p>
+    </div>        
+</div>
+<div class="mt-4">
+    <form method="POST" novalidate>
+        {% csrf_token %}
+        {{form.errors}}
+        <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+            <div class="sm:col-span-6">
+                <div class="sm:w-1/2">
+                    {% include 'core/forms/input_field.html' with form=form field=form.admin_notification_email %}
+                </div>
+            </div>
+            <div class="sm:col-span-6">
+                <div class="sm:w-1/2">
+                    {% include 'core/forms/select_field.html' with form=form field=form.send_admin_notification_email %}
+                </div>
+            </div>
+            <div class="sm:col-span-6">
+                <div class="sm:w-1/2">
+                    {% include 'core/forms/select_field.html' with form=form field=form.email_reminder_time %}
+                </div>
+            </div>
+        </div>
+        <div class="mt-4 text-right">
+            <button type="submit" class="bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Update Settings
+            </button>
+        </div>
+    </form> 
+</div>
+<div>
+    <div class="border-b mb-2">
+        <h3 class="text-lg leading-6 font-medium text-gray-900">
+            Email Templates
+        </h3>
+        <p class="mt-1 max-w-2xl text-sm text-gray-500">
+        </p>
+    </div>        
+</div>
+<div class="mt-4">
+    <div>
+        <div class="sm:hidden">
+            <label for="emailTabs" class="sr-only">Select a tab</label>
+            <select id="emailTabs" name="emailTabs" onchange="navigateEmailTemplate(this)" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                <option value="{% url 'site-detail-email' object.id %}?template=created" {% if request.GET.template == 'created' or not request.GET.template %}selected{% endif %}>Client Booking Created</option>
+                <option value="{% url 'site-detail-email' object.id %}?template=updated" {% if request.GET.template == 'updated' %}selected{% endif %}>Client Booking Updated</option>
+                <option value="{% url 'site-detail-email' object.id %}?template=cancelled" {% if request.GET.template == 'cancelled' %}selected{% endif %}>Client Booking Cancelled</option>
+                <option value="{% url 'site-detail-email' object.id %}?template=reminder" {% if request.GET.template == 'reminder' %}selected{% endif %}>Client Booking Reminder</option>
+                <option value="{% url 'site-detail-email' object.id %}?template=admin-created" {% if request.GET.template == 'admin-created' %}selected{% endif %}>Admin Booking Created</option>
+            </select>
+        </div>
+        <div class="hidden sm:block">
+            <div class="border-b border-gray-200">
+                <nav class="-mb-px flex space-x-8 overflow-x-auto" aria-label="Tabs">
+                    <a href="{% url 'site-detail-email' object.id %}?template=created" class="{% if request.GET.template == 'created' or not request.GET.template %}border-indigo-500 text-indigo-600{% else %}border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                        Client Booking Created
+                    </a>
+
+                    <a href="{% url 'site-detail-email' object.id %}?template=updated" class="{% if request.GET.template == 'updated' %}border-indigo-500 text-indigo-600{% else %}border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                        Client Booking Updated
+                    </a>
+
+                    <a href="{% url 'site-detail-email' object.id %}?template=cancelled" class="{% if request.GET.template == 'cancelled' %}border-indigo-500 text-indigo-600{% else %}border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" aria-current="page">
+                        Client Booking Cancelled
+                    </a>
+
+                    <a href="{% url 'site-detail-email' object.id %}?template=reminder" class="{% if request.GET.template == 'reminder' %}border-indigo-500 text-indigo-600{% else %}border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" aria-current="page">
+                        Client Booking Reminder
+                    </a>
+
+                    <a href="{% url 'site-detail-email' object.id %}?template=admin-created" class="{% if request.GET.template == 'admin-created' %}border-indigo-500 text-indigo-600{% else %}border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" aria-current="page">
+                        Admin Booking Created
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <div class="mt-2">
+        <form method="POST" action="{% url 'site-detail-email-template' object.id %}">
+            {% csrf_token %}
+            <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
+                {% if request.GET.template == 'updated' %}
+                    <div class="sm:col-span-2">
+                        <p class="mt-2 text-sm text-gray-500">Email sent to the client when a booking has been updated.</p>
+                    </div>
+                    <input type="text" name="template" value="updated" hidden>
+                    <div class="sm:col-span-1">
+                        <div class="flex justify-between">
+                            <label for="id_" class="block text-sm font-medium text-gray-700">
+                                Email Subject
+                            </label>
+                        </div>
+                        <div class="mt-1">
+                            <input type="text" name="email_subject" value="{{ site.client_email_booking_updated_subject }}" maxlength="200" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" placeholder="" rows="" required="" id="id_client_email_booking_cancelled_subject">
+                        </div>
+                        <p class="mt-2 text-sm text-gray-500">The subject may only contain plain text.</p>
+                    </div>
+                    <div class="sm:col-span-1"></div>
+                    <div class="sm:col-span-2">
+                        <div class="flex justify-between">
+                            <label for="id_" class="block text-sm font-medium text-gray-700">
+                                Email Content
+                            </label>
+                        </div>
+                            <div class="mt-1">
+                                <textarea name="email_content" style="width: 100%;" rows="15" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" placeholder="" required="" id="id_client_email_booking_updated_content">{{ site.client_email_booking_updated_content }}</textarea>
+                            </div>
+                        <p class="mt-2 text-sm text-gray-500"></p>
+                    </div>
+                {% elif request.GET.template == 'cancelled' %}
+                    <div class="sm:col-span-2">
+                        <p class="mt-2 text-sm text-gray-500">Email sent to the client when a booking has been cancelled.</p>
+                    </div>
+                    <input type="text" name="template" value="cancelled" hidden>
+                    <div class="sm:col-span-1">
+                        <div class="flex justify-between">
+                            <label for="id_" class="block text-sm font-medium text-gray-700">
+                                Email Subject
+                            </label>
+                        </div>
+                        <div class="mt-1">
+                            <input type="text" name="email_subject" value="{{ site.client_email_booking_cancelled_subject }}" maxlength="200" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" placeholder="" rows="" required="" id="id_client_email_booking_cancelled_subject">
+                        </div>
+                        <p class="mt-2 text-sm text-gray-500">The subject may only contain plain text.</p>
+                    </div>
+                    <div class="sm:col-span-1"></div>
+                    <div class="sm:col-span-2">
+                        <div class="flex justify-between">
+                            <label for="id_" class="block text-sm font-medium text-gray-700">
+                                Email Content
+                            </label>
+                        </div>
+                            <div class="mt-1">
+                                <textarea name="email_content" style="width: 100%;" rows="15" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" placeholder="" required="" id="id_client_email_booking_cancelled_content">{{ site.client_email_booking_cancelled_content }}</textarea>
+                            </div>
+                        <p class="mt-2 text-sm text-gray-500"></p>
+                    </div>
+                {% elif request.GET.template == 'reminder' %}
+                    <div class="sm:col-span-2">
+                        <p class="mt-2 text-sm text-gray-500">Email sent to the client for a booking reminder.</p>
+                    </div>
+                    <input type="text" name="template" value="reminder" hidden>
+                    <div class="sm:col-span-1">
+                        <div class="flex justify-between">
+                            <label class="block text-sm font-medium text-gray-700">
+                                Email Subject
+                            </label>
+                        </div>
+                        <div class="mt-1">
+                            <input type="text" name="email_subject" value="{{ site.client_email_booking_reminder_subject }}" maxlength="200" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" placeholder="" rows="" required="" id="id_client_email_booking_reminder_subject">
+                        </div>
+                        <p class="mt-2 text-sm text-gray-500">The subject may only contain plain text.</p>
+                    </div>
+                    <div class="sm:col-span-1"></div>
+                    <div class="sm:col-span-2">
+                        <div class="flex justify-between">
+                            <label class="block text-sm font-medium text-gray-700">
+                                Email Content
+                            </label>
+                        </div>
+                            <div class="mt-1">
+                                <textarea name="email_content" style="width: 100%;" rows="15" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" placeholder="" required="" id="id_client_email_booking_reminder_content">{{ site.client_email_booking_reminder_content }}</textarea>
+                            </div>
+                        <p class="mt-2 text-sm text-gray-500"></p>
+                    </div>
+                {% elif request.GET.template == 'admin-created' %}
+                    <div class="sm:col-span-2">
+                        <p class="mt-2 text-sm text-gray-500">Email sent to the admin notification email when a booking is created.</p>
+                    </div>
+                    <input type="text" name="template" value="reminder" hidden>
+                    <div class="sm:col-span-1">
+                        <div class="flex justify-between">
+                            <label class="block text-sm font-medium text-gray-700">
+                                Email Subject
+                            </label>
+                        </div>
+                        <div class="mt-1">
+                            <input type="text" name="email_subject" value="{{ site.admin_email_booking_created_subject }}" maxlength="200" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" placeholder="" rows="" required="" id="id_admin_email_booking_created_subject">
+                        </div>
+                        <p class="mt-2 text-sm text-gray-500">The subject may only contain plain text.</p>
+                    </div>
+                    <div class="sm:col-span-1"></div>
+                    <div class="sm:col-span-2">
+                        <div class="flex justify-between">
+                            <label class="block text-sm font-medium text-gray-700">
+                                Email Content
+                            </label>
+                        </div>
+                            <div class="mt-1">
+                                <textarea name="email_content" style="width: 100%;" rows="15" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" placeholder="" required="" id="id_admin_email_booking_created_content">{{ site.admin_email_booking_created_content }}</textarea>
+                            </div>
+                        <p class="mt-2 text-sm text-gray-500"></p>
+                    </div>
+                {% else %}
+                    <div class="sm:col-span-2">
+                        <p class="mt-2 text-sm text-gray-500">Email sent to the client when a booking has been created.</p>
+                    </div>
+                    <input type="text" name="template" value="created" hidden>
+                    <div class="sm:col-span-1">
+                        <div class="flex justify-between">
+                            <label for="id_" class="block text-sm font-medium text-gray-700">
+                                Email Subject
+                            </label>
+                        </div>
+                        <div class="mt-1">
+                            <input type="text" name="email_subject" value="{{ site.client_email_booking_created_subject }}" maxlength="200" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" placeholder="" rows="" required="" id="id_client_email_booking_cancelled_subject">
+                        </div>
+                        <p class="mt-2 text-sm text-gray-500">The subject may only contain plain text.</p>
+                    </div>
+                    <div class="sm:col-span-1"></div>
+                    <div class="sm:col-span-2">
+                        <div class="flex justify-between">
+                            <label for="id_" class="block text-sm font-medium text-gray-700">
+                                Email Content
+                            </label>
+                        </div>
+                            <div class="mt-1">
+                                <textarea name="email_content" style="width: 100%;" rows="15" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" placeholder="" required="" id="id_client_email_booking_created_content">{{ site.client_email_booking_created_content }}</textarea>
+                            </div>
+                        <p class="mt-2 text-sm text-gray-500"></p>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="mt-4 text-right">
+                <button type="submit" class="bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Update Template
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock detail_content %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+    function navigateEmailTemplate() {
+        var tabs = document.getElementById('emailTabs');
+        window.location.replace(tabs.value);
+    } 
+</script>
+{% endblock scripts %}

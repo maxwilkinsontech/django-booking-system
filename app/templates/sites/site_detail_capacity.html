@@ -1,0 +1,116 @@
+{% extends 'sites/site_detail_base.html' %}
+{% load static widget_tweaks %}
+
+{% block sub_nav_capacity %}bg-indigo-100 text-indigo-700{% endblock sub_nav_capacity %}
+
+{% block apline_data %}'showSaveModal': false }" @keydown.escape="showSaveModal = false;"{% endblock apline_data %} 
+
+{% block detail_content %}
+<form method="POST" id="tableForm">
+    {% csrf_token %}
+    <div>
+        <div class="border-b mb-2">
+            <h3 class="text-lg leading-6 font-medium text-gray-900">
+                Capacity
+            </h3>
+            <p class="mt-1 max-w-2xl text-sm text-gray-500">
+                Define and update the seating capacity of the site. Below, add all tables available for booking.
+            </p>
+        </div>        
+    </div>
+    <div class="mt-4">
+        {% if formset.errors %}
+            <div class="rounded-md bg-red-50 p-4 mb-4">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <!-- Heroicon name: solid/x-circle -->
+                        <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-medium text-red-800">
+                            There was an error when updating the seating capacity:
+                        </h3>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        <table class="w-full sm:w-1/2 divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <th scope="col" class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Table Name
+                </th>
+                <th scope="col" class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Number of Seats
+                </th>
+                <th scope="col" class="relative px-2 py-3">
+                </th>
+            </thead>
+            {{ formset.management_form }}
+            {% for form in formset.forms %}
+                <tr class="my-2 formset_row-{{ formset.prefix }}">
+                    {% for field in form.visible_fields %}
+                        <td class="mx-0" style="vertical-align: text-top;">
+                            {% if forloop.first %}
+                                {% for hidden in form.hidden_fields %}
+                                    {{ hidden }}
+                                {% endfor %}
+                            {% endif %}
+                            {% if form.is_bound %}
+                                {% if field.errors %}
+                                    <div class="relative rounded-md shadow-sm">
+                                        {% render_field field class="block w-full pr-10 border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm" %}
+                                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                            <svg class="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    {% for error in field.errors %}
+                                        <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="relative rounded-md shadow-sm">
+                                        {% render_field field class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300" %}
+                                    </div>
+                                {% endif %}
+                            {% else %}
+                                {% render_field field class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300" %}
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="mt-4 text-right">
+        <button @click="showSaveModal = true" type="button" class="bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            Update Settings
+        </button>
+    </div>
+</form>
+
+{% include 'core/modals/confirm_modal.html' with var_name='showSaveModal' modal_title='Update Capacity Settings' modal_text='Are you sure you want to update the capacity of this site? Removing a table will cause the cancellation of all future bookings for it. THIS CANNOT BE UNDONE!' %}
+{% endblock detail_content %}
+
+{% block scripts %}
+{{ block.super }}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="{% static 'js/jquery.formset.js' %}"></script>
+<script type="text/javascript">
+    $('.formset_row-{{ formset.prefix }}').formset({
+        prefix: '{{ formset.prefix }}',
+        addText: 'Add New',
+        //addCssClass: 'inline-flex items-center px-2.5 py-1.5 mt-2 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500',
+        deleteText: 'Remove',
+        //deleteCssClass: 'inline-flex items-center px-2.5 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500',
+    });
+</script>
+<script>
+    function submitForm() {
+        var form = document.getElementById('tableForm');
+        form.submit();
+    }
+</script>
+{% endblock scripts %}

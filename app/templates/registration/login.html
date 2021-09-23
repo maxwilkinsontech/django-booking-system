@@ -1,0 +1,54 @@
+{% extends 'registration/base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div>
+    <h2 class="mt-6 text-3xl font-extrabold text-gray-900">
+        Sign in to your account
+    </h2>
+</div>
+
+<div class="mt-8">
+    <div class="mt-6">
+        <form action="#" method="POST" class="space-y-6" novalidate>
+            {% csrf_token %}
+            <div>
+                {% include 'core/forms/input_field.html' with form=form field=form.username label="Username" %}
+            </div>
+
+            <div class="space-y-1">
+                {% include 'core/forms/input_field.html' with form=form field=form.password label="Password" %}
+            </div>
+
+            {% if form.errors %}
+                {% for error in form.non_field_errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ error }}</p>
+                {% endfor %}
+            {% endif %}
+
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                </div>
+
+                <div class="text-sm">
+                    <a href="{% url 'password_reset' %}" class="font-medium text-indigo-600 hover:text-indigo-500">
+                        Forgot your password?
+                    </a>
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" class="relative block w-full py-2 px-3 border border-transparent rounded-md text-white font-semibold bg-indigo-600 hover:bg-indigo-700 focus:bg-indigo-900 focus:outline-none focus:shadow-outline sm:text-sm">
+                    <span class="absolute left-0 inset-y pl-3">
+                        <svg class="h-5 w-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
+                        </svg>
+                    </span>
+                    Sign in
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}

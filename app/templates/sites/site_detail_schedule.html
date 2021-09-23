@@ -1,0 +1,98 @@
+{% extends 'sites/site_detail_base.html' %}
+
+{% block sub_nav_schedule %}bg-indigo-100 text-indigo-700{% endblock sub_nav_schedule %}
+
+{% block detail_content %}
+<form method="POST">
+    {% csrf_token %}
+    <div>
+        <div class="border-b mb-2">
+            <h3 class="text-lg leading-6 font-medium text-gray-900">
+                Schedule
+            </h3>
+            <p class="mt-1 max-w-2xl text-sm text-gray-500">
+                Define and update the opening hours of the site.
+            </p>
+        </div>        
+    </div>
+    <div class="mt-4">
+        <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-5">
+            <div class="sm:col-span-1">
+                <label for="booking_site" class="block text-sm font-medium text-gray-700">Monday</label>
+            </div>
+            <div class="sm:col-span-2">
+                {% include 'core/forms/time_field.html' with form=form field=form.mon_opening_hour label='Opening time' %}
+            </div>
+            <div class="sm:col-span-2">
+                {% include 'core/forms/time_field.html' with form=form field=form.mon_closing_hour label='Closing time' %}
+            </div>
+            <div class="sm:col-span-1">
+                <label for="booking_site" class="block text-sm font-medium text-gray-700">Tuesday</label>
+            </div>
+            <div class="sm:col-span-2">
+                {% include 'core/forms/time_field.html' with form=form field=form.tue_opening_hour label='Opening time' %}
+            </div>
+            <div class="sm:col-span-2">
+                {% include 'core/forms/time_field.html' with form=form field=form.tue_closing_hour label='Closing time' %}
+            </div>
+            <div class="sm:col-span-1">
+                <label for="booking_site" class="block text-sm font-medium text-gray-700">Wednesday</label>
+            </div>
+            <div class="sm:col-span-2">
+                {% include 'core/forms/time_field.html' with form=form field=form.wed_opening_hour label='Opening time' %}
+            </div>
+            <div class="sm:col-span-2">
+                {% include 'core/forms/time_field.html' with form=form field=form.wed_closing_hour label='Closing time' %}
+            </div>
+            <div class="sm:col-span-1">
+                <label for="booking_site" class="block text-sm font-medium text-gray-700">Thursday</label>
+            </div>
+            <div class="sm:col-span-2">
+                {% include 'core/forms/time_field.html' with form=form field=form.thu_opening_hour label='Opening time' %}
+            </div>
+            <div class="sm:col-span-2">
+                {% include 'core/forms/time_field.html' with form=form field=form.thu_closing_hour label='Closing time' %}
+            </div>
+            <div class="sm:col-span-1">
+                <label for="booking_site" class="block text-sm font-medium text-gray-700">Friday</label>
+            </div>
+            <div class="sm:col-span-2">
+                {% include 'core/forms/time_field.html' with form=form field=form.fri_opening_hour label='Opening time' %}
+            </div>
+            <div class="sm:col-span-2">
+                {% include 'core/forms/time_field.html' with form=form field=form.fri_closing_hour label='Closing time' %}
+            </div>
+            <div class="sm:col-span-1">
+                <label for="booking_site" class="block text-sm font-medium text-gray-700">Saturday</label>
+            </div>
+            <div class="sm:col-span-2">
+                {% include 'core/forms/time_field.html' with form=form field=form.sat_opening_hour label='Opening time' %}
+            </div>
+            <div class="sm:col-span-2">
+                {% include 'core/forms/time_field.html' with form=form field=form.sat_closing_hour label='Closing time' %}
+            </div>
+            <div class="sm:col-span-1">
+                <label for="booking_site" class="block text-sm font-medium text-gray-700">Sunday</label>
+            </div>
+            <div class="sm:col-span-2">
+                {% include 'core/forms/time_field.html' with form=form field=form.sun_opening_hour label='Opening time' %}
+            </div>
+            <div class="sm:col-span-2">
+                {% include 'core/forms/time_field.html' with form=form field=form.sun_closing_hour label='Closing time' %}
+            </div>
+        </div>
+    </div>
+    <div class="mt-4 text-right">
+        <button type="submit" class="bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            Update Settings
+        </button>
+    </div>
+</form> 
+{% endblock detail_content %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+    initTimepickr();
+</script>
+{% endblock scripts %}

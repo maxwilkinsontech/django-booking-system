@@ -1,0 +1,27 @@
+{% if available_time_slots %}
+    {% if not request.GET.f %}
+        <div>
+            <label for="id_time" class="block text-sm font-medium text-gray-700">Time Slots Available</label>
+            <select id="id_time" name="time" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                <option disabled selected value> -- select an option -- </option>
+                {% for time_slot in available_time_slots %}
+                    <option value="{{ time_slot|date:'H:i' }}">{{ time_slot|date:'H:i' }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    {% else %}
+        <div>
+            <label for="id_time" class="form-label">Time Slots Available</label>
+            <select id="id_time" name="time" class="form-select">
+                <option disabled selected value> -- select an option -- </option>
+                {% for time_slot in available_time_slots %}
+                    <option value="{{ time_slot|date:'H:i' }}">{{ time_slot|date:'H:i' }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    {% endif %}
+{% else %}
+    <div class="frontend-text">
+        <p>Sorry, there are no time slots available for this date and party size.</p>
+    </div>
+{% endif %}

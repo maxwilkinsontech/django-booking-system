@@ -1,0 +1,74 @@
+{% extends 'sites/site_detail_base.html' %}
+
+{% block sub_nav_general %}bg-indigo-100 text-indigo-700{% endblock sub_nav_general %}
+
+{% block detail_content %}
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div>
+        <div class="border-b mb-2">
+            <h3 class="text-lg leading-6 font-medium text-gray-900">
+                General
+            </h3>
+            <p class="mt-1 max-w-2xl text-sm text-gray-500">
+                Define and update the general settings for the site.
+            </p>
+        </div>        
+    </div>
+    <div class="mt-4">
+        <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+            <div class="sm:col-span-6">
+                <div class="sm:w-1/2">
+                    {% include 'core/forms/input_field.html' with form=form field=form.site_name %}
+                    <p class="mt-2 text-sm text-gray-500">Unique identifying name of the site.</p>
+                </div>
+            </div>
+            <div class="sm:col-span-6">
+                <div class="sm:w-1/2">
+                    <div class="text-sm text-gray-600">
+                        {% include 'core/forms/input_field.html' with form=form field=form.site_logo %}
+                    </div>
+                    <p class="mt-2 text-sm text-gray-500">Logo shown on frontend to clients. Leave blank to not allow bookings for this site.</p>
+                </div>
+            </div>
+            <div class="sm:col-span-6">
+                <div class="sm:w-1/2">
+                    {% include 'core/forms/select_field.html' with form=form field=form.booking_duration %}
+                    <p class="mt-2 text-sm text-gray-500">Time length of bookings.</p>
+                </div>
+            </div>
+            <div class="sm:col-span-3">
+                {% include 'core/forms/select_field.html' with form=form field=form.min_party_num label="Min party size" %}
+                <p class="mt-2 text-sm text-gray-500">Minimum party size of bookings.</p>
+            </div>
+            <div class="sm:col-span-3">
+                {% include 'core/forms/select_field.html' with form=form field=form.max_party_num label="Max party size" %}
+                <p class="mt-2 text-sm text-gray-500">Maximum party size of bookings.</p>
+            </div>
+            <div class="sm:col-span-3">
+                {% include 'core/forms/select_field.html' with form=form field=form.early_booking %}
+                <p class="mt-2 text-sm text-gray-500">Earliest a booking can be made.</p>
+            </div>
+            <div class="sm:col-span-3">
+                {% include 'core/forms/select_field.html' with form=form field=form.last_booking %}
+                <p class="mt-2 text-sm text-gray-500">Latest a booking can be made.</p>
+            </div>
+            <div class="sm:col-span-6">
+                <div class="sm:w-1/2">
+                    {% include 'core/forms/select_field.html' with form=form field=form.booking_time_before_closing label="Last Booking Before Closing" %}
+                    <p class="mt-2 text-sm text-gray-500">Latest a booking can start before closing.</p>
+                </div>
+            </div>
+            <div class="sm:col-span-3">
+                {% include 'core/forms/select_field.html' with form=form field=form.upward_scaling_policy %}
+                <p class="mt-2 text-sm text-gray-500">How much of a larger table should be given to a party when one of their size is not available?</p>
+            </div>
+        </div>
+    </div>
+    <div class="mt-4 text-right">
+        <button type="submit" class="bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            Update Settings
+        </button>
+    </div>
+</form> 
+{% endblock detail_content %}

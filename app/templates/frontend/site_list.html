@@ -1,0 +1,14 @@
+{% extends 'frontend/base.html' %}
+
+{% block content %}
+<h1 class="small--text-center" style="margin-bottom: 50px;">Select A Site For Booking</h1>
+<div class="small--text-center">
+    {% for site in object_list %}
+        {% if site.site_logo  %}
+            <a href="{% url 'frontend-booking-create' site.slug %}" class="site-logo">
+                <img src="{{ site.site_logo.url }}" alt="{{ site.site_name }}">
+            </a>
+        {% endif %}
+    {% endfor %}
+</div>
+{% endblock content %}

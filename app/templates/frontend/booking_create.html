@@ -1,0 +1,70 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+
+{% block content %}
+<form method="POST">
+    {% csrf_token %}
+    <div style="max-width: 400px;">
+        <h1>Create Booking: {{ site.site_name }}</h1>
+        <div>
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger my-3" role="alert">
+                    <h4 class="alert-heading">There was an error when creating this booking:</h4>
+                    {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        <div>
+            <div class="mb-3">
+                <label for="id_date" class="form-label">Booking Date</label>
+                {{ form.date }}
+            </div>
+            <div class="mb-3">
+                <div id="party_div" style="display: none;">
+                    <label for="id_party" class="form-label">Party Size</label>
+                    {{ form.party }}
+                </div>
+            </div>
+            <div>
+                <div id="time_div" style="display: none;">
+                    Loading times...
+                </div>
+            </div>
+        </div>
+        <div id="client_elements" class="mt-4" style="display: none;">
+            <div class="mb-3">
+                <label for="id_client_name" class="form-label">Your Name</label>
+                {{ form.client_name }}
+            </div>
+            <div class="mb-3">
+                <label for="id_client_email" class="form-label">Your Email</label>
+                {{ form.client_email }}
+            </div>
+            <div class="mb-3">
+                <label for="id_client_phone" class="form-label">Your Phone Number</label>
+                {{ form.client_phone }}
+            </div>
+            <div class="mb-3">
+                <label for="id_notes" class="form-label">Notes</label>
+                {{ form.notes }}
+            </div>
+            <button type="submit" class="btn">
+                Create Booking
+            </button>
+        </div>
+    </div>
+</form>
+{% endblock content %}
+
+{% block scripts %}
+<script>
+    var minDate = '{{ min_booking_date|date:"Y-m-d" }}';
+    var maxDate = '{{ max_booking_date|date:"Y-m-d" }}';
+    initFlatpickr(futureOnly = true, minDate = minDate, maxDate = maxDate);
+    var getTimesURL = "{% url 'booking-create-get-availability' site.id %}";
+    var frontend = true;
+</script>
+<script src="{% static 'js/create_booking.js' %}"></script>
+{% endblock scripts %}

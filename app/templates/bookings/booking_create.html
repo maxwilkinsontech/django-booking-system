@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block nav_booking_create_text %}bg-indigo-800 text-white{% endblock nav_booking_create_text %}
+{% block nav_booking_create_icon %}text-white{% endblock nav_booking_create_icon %}
+{% block nav_mobile_booking_create_text %}bg-indigo-800 text-white{% endblock nav_mobile_booking_create_text %}
+{% block nav_mobile_booking_create_icon %}text-white{% endblock nav_mobile_booking_create_icon %}
+
+{% block title %}Create Booking{% endblock title %}
+
+{% block content %}
+<div class="mt-4 md:flex md:items-center md:justify-between">
+    <div class="flex-1 min-w-0">
+        <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:leading-9 sm:truncate">
+            Create Booking: {{ site }}
+        </h2>
+    </div>
+</div>
+<form method="POST">
+    {% csrf_token %}
+    <div class="bg-white overflow-hidden shadow rounded-lg divide-y divide-gray-200 my-4">
+        <div class="px-4 py-5 sm:p-6">
+            {% if form.non_field_errors %}
+                <div class="rounded-md bg-red-50 p-4 mb-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <!-- Heroicon name: solid/x-circle -->
+                            <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-red-800">
+                                There was an error when creating this booking:
+                            </h3>
+                            <div class="mt-2 text-sm text-red-700">
+                                <ul class="list-disc pl-5 space-y-1">
+                                    {% for error in form.non_field_errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                <div class="sm:col-span-6">
+                    <div class="sm:w-1/2">
+                        {% include 'core/forms/date_field.html' with form=form field=form.date label="Booking Date" %}
+                        <p class="mt-2 text-sm text-gray-500">Please enter the date of the booking.</p>
+                    </div>
+                </div>
+                <div class="sm:col-span-6">
+                    <div class="sm:w-1/2">
+                        <div id="party_div" style="display: none;">
+                            {% include 'core/forms/select_field.html' with form=form field=form.party label="Party Size" %}
+                            <p class="mt-2 text-sm text-gray-500">Please enter the party size of the booking.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="sm:col-span-6">
+                    <div class="sm:w-1/2">
+                        <div id="time_div" style="display: none;">
+                            Loading times...
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="client_elements" style="display: none;">
+                <div class="relative mt-4 mb-3">
+                    <div class="absolute inset-0 flex items-center" aria-hidden="true">
+                        <div class="w-full border-t border-gray-300"></div>
+                    </div>
+                    <div class="relative flex justify-center">
+                        <span class="px-2 bg-white text-sm text-gray-500">
+                            Client Contact Information
+                        </span>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                    <div class="sm:col-span-6">
+                        <div class="sm:w-1/2">
+                            {% include 'core/forms/input_field.html' with form=form field=form.client_name label="Name" %}
+                        </div>
+                    </div>
+                    <div class="sm:col-span-6">
+                        <div class="sm:w-1/2">
+                            {% include 'core/forms/input_field.html' with form=form field=form.client_email label="Email" %}
+                        </div>
+                    </div>
+                    <div class="sm:col-span-6">
+                        <div class="sm:w-1/2">
+                            {% include 'core/forms/input_field.html' with form=form field=form.client_phone label="Phone" %}
+                        </div>
+                    </div>
+                    <div class="sm:col-span-6">
+                        <div class="sm:w-1/2">
+                            {% include 'core/forms/input_field.html' with form=form field=form.notes label="Notes" rows=3 optional=True %}
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <button type="submit" class="bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Create Booking
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock content %}
+
+{% block scripts %}
+<script>
+    initFlatpickr(futureOnly = true);
+    var getTimesURL = "{% url 'booking-create-get-availability' site.id %}";
+    var frontend = false;
+</script>
+<script src="{% static 'js/create_booking.js' %}"></script>
+{% endblock scripts %}

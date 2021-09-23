@@ -1,0 +1,22 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book A Table</title>
+
+    <!-- alpinejs  -->
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+    <!-- flatpickr -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    {% block extra_head %}{% endblock extra_head %}
+</head>
+
+<body>
+    {% block content %}{% endblock content %}
+    <script src="{% static 'js/date_util.js' %}"></script>
+    {% block scripts %}{% endblock scripts %}
+</body>
