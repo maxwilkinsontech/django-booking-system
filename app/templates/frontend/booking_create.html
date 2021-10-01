@@ -58,7 +58,7 @@
 </form>
 {% endblock content %}
 
-{% block scripts %}
+{% block extra_scripts %}
 <script>
     var minDate = '{{ min_booking_date|date:"Y-m-d" }}';
     var maxDate = '{{ max_booking_date|date:"Y-m-d" }}';
@@ -67,4 +67,4 @@
     var frontend = true;
 </script>
 <script src="{% static 'js/create_booking.js' %}"></script>
-{% endblock scripts %}
+{% endblock extra_scripts %}

@@ -1,15 +1,11 @@
-from django.views.generic import (
-    ListView,
-    DetailView,
-    FormView,
-)
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
+from django.views.generic import DetailView, FormView, ListView
 
-from .utils import get_early_booking_date, get_last_booking_date
-from .forms import FrontendCreateBookingForm
 from bookings.models import Booking
 from sites.models import Site
+from .forms import FrontendCreateBookingForm
+from .utils import get_early_booking_date, get_last_booking_date
 
 
 class SiteListView(ListView):
