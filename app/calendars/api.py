@@ -1,5 +1,4 @@
-from datetime import datetime
-
+from dateutil import parser
 from rest_framework.generics import ListAPIView
 
 from bookings.models import Booking
@@ -14,8 +13,8 @@ class CalendarAPIView(ListAPIView):
     serializer_class = BookingSerializer
 
     def get_queryset(self):
-        start = datetime.fromisoformat(self.request.GET.get('start'))
-        end = datetime.fromisoformat(self.request.GET.get('end'))
+        start = parser.isoparse(self.request.GET.get('start'))
+        end = parser.isoparse(self.request.GET.get('end'))
 
         bookings = (
             Booking.objects.get_bookings(self.request.user)

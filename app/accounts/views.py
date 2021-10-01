@@ -12,7 +12,7 @@ from .models import User
 
 class BasePathRedirect(RedirectView):
     """
-    Redirect the user depending on if there are logged in or not.
+    Redirect the user depending on if they are logged in or not.
     """
 
     def get_redirect_url(self, *args, **kwargs):
@@ -26,7 +26,7 @@ class SettingsHomeView(LoginRequiredMixin, TemplateView):
     View to display a template linking to the different settings pages.
     """
 
-    template_name = 'users/settings_home.html'
+    template_name = 'accounts/settings_home.html'
 
 
 class MyAccountView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
@@ -34,7 +34,7 @@ class MyAccountView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     View for a User to update their account.
     """
 
-    template_name = 'users/my_account.html'
+    template_name = 'accounts/my_account.html'
     form_class = UserForm
     success_url = reverse_lazy('settings')
     success_message = 'Account successfully updated'
@@ -53,7 +53,7 @@ class UserAccountListView(LoginRequiredMixin, ManagerAccessMixin, ListView):
     View for managers to manage the User accounts.
     """
 
-    template_name = 'users/account_list.html'
+    template_name = 'accounts/account_list.html'
     queryset = (
         User.objects.all()
         .order_by('site', 'first_name')
@@ -84,7 +84,7 @@ class UserAccountCreateView(
     View for managers to create a User account.
     """
 
-    template_name = 'users/account_create.html'
+    template_name = 'accounts/account_create.html'
     model = User
     form_class = UserForm
     redirect_url = reverse_lazy('settings')
@@ -104,7 +104,7 @@ class UserAccountDetailView(
     View for managers to manage the User accounts.
     """
 
-    template_name = 'users/account_detail.html'
+    template_name = 'accounts/account_detail.html'
     queryset = User.objects.all().select_related('site').exclude(is_superuser=True)
     form_class = UserForm
     redirect_url = reverse_lazy('settings')

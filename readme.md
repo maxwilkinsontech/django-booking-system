@@ -12,7 +12,7 @@ I will be slowly adding features to this project with the hopes of making it ful
 
 ## Development
 
-TODO
+
 
 
 ## Deployment
